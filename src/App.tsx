@@ -22,6 +22,7 @@ function App() {
           <Route path="/bportal" element={<BrokerPortal />} />
           
           <Route path="/emp" element={<EmployerDashboard />} />
+          <Route path="/emp" element={<EmployerDashboard />} />
           
           <Route
             path="/employer/*"
