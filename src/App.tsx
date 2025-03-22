@@ -18,11 +18,9 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
-          <Route path="/bportal" element={<BrokerPortal />} />
-          
-          <Route path="/emp" element={<EmployerDashboard />} />
-          
+          <Route path="/admin_dash" element={<AdminDashboard />} />
+          <Route path="/brokerportal" element={<BrokerPortal />} />
+          <Route path="/employer_dash" element={<EmployerDashboard />} />          
           <Route
             path="/employer/*"
             element={
