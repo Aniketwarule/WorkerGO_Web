@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   Briefcase,
@@ -8,39 +8,68 @@ import {
   Search,
   Download,
   AlertCircle,
+  FileText,
 } from 'lucide-react';
+import axios from 'axios'; // Make sure axios is installed
+import {baseUrl } from '../App';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [statsData, setStatsData] = useState({
+    totalWorkers: 0,
+    totalEmployers: 0,
+    totalBrokers: 0,
+    totalJobs: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${baseUrl}/admin/stats`);
+        setStatsData(response.data);
+        console.log(response.data)
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+        setError("Failed to load statistics. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const stats = [
     {
-      title: 'Total Employers',
-      value: '124',
-      change: '+12%',
+      title: "Total Employers",
+      value: loading ? "..." : statsData.totalEmployers,
+      change: "+12%",
       icon: Building2,
-      color: 'bg-blue-500',
+      color: "bg-blue-500",
     },
     {
-      title: 'Total Workers',
-      value: '1,567',
-      change: '+23%',
+      title: "Total Workers",
+      value: loading ? "..." : statsData.totalWorkers,
+      change: "+23%",
       icon: Users,
-      color: 'bg-green-500',
+      color: "bg-green-500",
     },
     {
-      title: 'Active Brokers',
-      value: '45',
-      change: '+8%',
+      title: "Active Brokers",
+      value: loading ? "..." : statsData.totalBrokers,
+      change: "+8%",
       icon: Briefcase,
-      color: 'bg-yellow-500',
+      color: "bg-yellow-500",
     },
     {
-      title: 'Job Success Rate',
-      value: '94%',
-      change: '+5%',
-      icon: TrendingUp,
-      color: 'bg-purple-500',
+      title: "Jobs Posted",
+      value: loading ? "..." : statsData.totalJobs,
+      change: "+15%",
+      icon: FileText,
+      color: "bg-purple-500",
     },
   ];
 
@@ -132,28 +161,34 @@ const AdminDashboard = () => {
         </div>
 
         {/* Statistics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className={`flex-shrink-0 rounded-md p-3 ${stat.color}`}>
-                    <stat.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="ml-5">
-                    <p className="text-sm font-medium text-gray-500 truncate">{stat.title}</p>
-                    <div className="flex items-baseline">
-                      <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
-                      <p className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                        {stat.change}
-                      </p>
+        {error ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8">
+            <p>{error}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white overflow-hidden shadow rounded-lg w-full">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className={`flex-shrink-0 rounded-md p-3 ${stat.color}`}>
+                      <stat.icon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="ml-5">
+                      <p className="text-sm font-medium text-gray-500 truncate">{stat.title}</p>
+                      <div className="flex items-baseline">
+                        <p className="text-2xl font-semibold text-gray-900">{stat.value}</p>
+                        <p className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                          {stat.change}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="bg-white shadow rounded-lg">

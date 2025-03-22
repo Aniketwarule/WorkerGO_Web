@@ -9,6 +9,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 
+export const baseUrl = 'http://localhost:3000';
+
 function App() {
   return (
     <AuthProvider>
@@ -18,12 +20,9 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
-          <Route path="/bportal" element={<BrokerPortal />} />
-          
-          <Route path="/emp" element={<EmployerDashboard />} />
-          <Route path="/emp" element={<EmployerDashboard />} />
-          
+          <Route path="/admin_dash" element={<AdminDashboard />} />
+          <Route path="/brokerportal" element={<BrokerPortal />} />
+          <Route path="/employer_dash" element={<EmployerDashboard />} />          
           <Route
             path="/employer/*"
             element={
